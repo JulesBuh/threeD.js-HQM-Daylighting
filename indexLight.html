@@ -233,8 +233,10 @@ src:url("https://fast.fonts.…</style>
 				var controls, guiControls, datGUI;
 				var axis, grid, color;
 				var wallGeometry,floorGeometry,ceilingGeometry,windowGeometry,planeGeometry;
-				var planeMaterial, planeMaterial;
-				var wall, plane;
+				var planeMaterial, planeMaterial;annotationMaterial
+				var wall, obstructionPlane;
+				var annotationLineGeometry;
+				var annotationLine;
 				var spotlight,spotlight2,ambient;
 				var stats;
 				var SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -261,12 +263,28 @@ src:url("https://fast.fonts.…</style>
 				grid = new THREE.GridHelper( 50, 50 );
 							grid.material.opacity = 0.25;
 							grid.material.transparent = true;
+			// obstruction Plane
 				planeGeometry = new THREE.PlaneGeometry(5, 1, 1);
 				planeMaterial = new THREE.MeshLambertMaterial({color: 0x0033aa});
 				planeMaterial.side = THREE.DoubleSide
 				planeMaterial.opacity = 0.5;
 				planeMaterial.transparent  = true;
-				plane = new THREE.Mesh(planeGeometry, planeMaterial);
+				obstructionPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+			// working Plane
+				workplaneGeometry = new THREE.PlaneGeometry(5, 1, 1);
+				workplaneMaterial = new THREE.MeshLambertMaterial({color: 0x0033aa});
+				workplaneMaterial.side = THREE.DoubleSide
+				workplaneMaterial.opacity = 0.5;
+				workplaneMaterial.transparent  = true;
+				workPlane = new THREE.Mesh(workplaneGeometry, workplaneMaterial);
+			//
+				var annotationMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
+				var annotationLineGeometry = new THREE.Geometry();
+				annotationLineGeometry.vertices.push(
+					new THREE.Vector3( 0, 0.85, -3.8 ),
+					new THREE.Vector3( 0, 4.35, 7.7 )
+				);
+				var annotationLine = new THREE.Line( annotationLineGeometry, annotationMaterial );
 			// wall
 				wallGeometry = new THREE.BoxGeometry(1, 2.5, 1);
 				wall_principal_Geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -334,12 +352,19 @@ src:url("https://fast.fonts.…</style>
 					
 					//opening.position.set(-2.5+0.5, 1.5, 0);
 					//scene.add(opening);
-				//plane placement
-					plane.scale.set( 1, 1, 1 );
-					plane.position.y = 0.5;
-					plane.rotation.y = Math.PI;
-					plane.receiveShadow = true;
-					scene.add(plane);
+				//obstructionPlane placement
+					obstructionPlane.scale.set( 1, 1, 1 );
+					obstructionPlane.position.y = 0.5;
+					obstructionPlane.rotation.y = Math.PI;
+					obstructionPlane.receiveShadow = true;
+					scene.add(obstructionPlane);
+				//workPlane placement
+					workPlane.scale.set( 1, (5*(2.5-0.85))/2.9, 1 );
+					workPlane.position.y = 0.85;
+					workPlane.position.z = -((5*(2.5-0.85))/2.9/2);
+					workPlane.rotation.x = Math.PI/2;
+					workPlane.receiveShadow = true;
+					scene.add(workPlane);
 				//lighting placement
 					spotlight.position.set(-15, 30, 60);
 					spotlight.castShadow = true;
@@ -351,6 +376,8 @@ src:url("https://fast.fonts.…</style>
 				//camera placement
 					camera.position.set(-10, 5, 2.5);
 					camera.lookAt(scene.position);
+				// annotation
+					scene.add( annotationLine );
 			// Controls
 				// InteractiveControls
 				var guiControls = new function(){
@@ -386,8 +413,8 @@ src:url("https://fast.fonts.…</style>
 				var f3 = datGUI.addFolder('Calculation Outputs');
 				f1.add(guiControls, 'room_Depth', 1, 30);
 				f1.add(guiControls, 'D_obstruction_Position', 0.5, 30);
-				f1.add(guiControls, 'y_obstruction_Height_above_head_Window', 0, 20);
-				f1.add(guiControls, 'H_obstruction_Height_above_mid_Window', 0, 20).listen();
+				f1.add(guiControls, 'y_obstruction_Height_above_head_Window', 0.01, 20);
+				f1.add(guiControls, 'H_obstruction_Height_above_mid_Window', 0.005, 20).listen();
 				f1.add(guiControls, 'Tw_Wall_Thickness', 0.05, 1.0);
 				f1.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0, 2.4).listen();
 				f1.add(guiControls, 'window_cill_Height_above_FFL', 0.05, 2.5).listen();
@@ -419,8 +446,12 @@ src:url("https://fast.fonts.…</style>
 					guiControls.h_head_Window_Height_above_FFL = 2.5
 					}
 					guiControls.H_obstruction_Height_above_mid_Window = guiControls.y_obstruction_Height_above_head_Window-(guiControls.Hw_window_opening_dim_verticalHeight/2)
-					
+					updateSplineOutline();
 					Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
+					
+					workPlane.scale.set(1,guiControls.d_skyline_depth ,1);
+					workPlane.position.set(0,0.85,-(guiControls.d_skyline_depth-(Number(guiControls.Tw_Wall_Thickness)))/2);
+					
 					axis.rotation.x = Number(guiControls.rotationX_deg)/180*Math.PI;
 					axis.rotation.y = Number(guiControls.rotationY_deg)/180*Math.PI;
 					axis.rotation.z = Number(guiControls.rotationZ_deg)/180*Math.PI;
@@ -445,13 +476,24 @@ src:url("https://fast.fonts.…</style>
 					floor.position.set(Number(guiControls.positionX),-0.15,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
 					floor.scale.x=5;
 					floor.scale.z=Number(guiControls.room_Depth)+Number(guiControls.Tw_Wall_Thickness);
-					ceiling.position.set(Number(guiControls.positionX),2.5,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
+					ceiling.position.set(Number(guiControls.positionX),2.5+0.15,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
 					ceiling.scale.x=5;
 					ceiling.scale.z=Number(guiControls.room_Depth)+Number(guiControls.Tw_Wall_Thickness);
-					plane.scale.set( 1, Number(guiControls.y_obstruction_Height_above_head_Window)+guiControls.h_head_Window_Height_above_FFL+0.3, 1 );
-					plane.position.y = ((guiControls.y_obstruction_Height_above_head_Window+ guiControls.h_head_Window_Height_above_FFL-0.3)/2);
-					plane.position.z = Number(guiControls.D_obstruction_Position);
+					obstructionPlane.scale.set( 1, Number(guiControls.y_obstruction_Height_above_head_Window)+guiControls.h_head_Window_Height_above_FFL, 1 );
+					obstructionPlane.position.y = ((guiControls.y_obstruction_Height_above_head_Window+ guiControls.h_head_Window_Height_above_FFL-0.3)/2);
+					obstructionPlane.position.z = Number(guiControls.D_obstruction_Position)+(guiControls.Tw_Wall_Thickness/2);
 				}
+				
+					function updateSplineOutline() { 
+
+								annotationLine.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL-0.15;
+								annotationLine.geometry.vertices[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);								
+								annotationLine.geometry.vertices[ 0 ].z = -guiControls.d_skyline_depth+(guiControls.Tw_Wall_Thickness/2);
+								annotationLine.geometry.verticesNeedUpdate = true;
+					} 
+
+
+				
 				function animate(){
 					requestAnimationFrame(animate);
 					render();     
