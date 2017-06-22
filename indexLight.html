@@ -416,7 +416,7 @@ src:url("https://fast.fonts.…</style>
 				f1.add(guiControls, 'y_obstruction_Height_above_head_Window', 0.01, 20);
 				f1.add(guiControls, 'H_obstruction_Height_above_mid_Window', 0.005, 20).listen();
 				f1.add(guiControls, 'Tw_Wall_Thickness', 0.05, 1.0);
-				f1.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0, 2.4).listen();
+				f1.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0.4, 2.4).listen();
 				f1.add(guiControls, 'window_cill_Height_above_FFL', 0.05, 2.5).listen();
 				f2.add(guiControls, 'h_head_Window_Height_above_FFL', 0, 2.5).listen();
 				f3.add(guiControls, 'd_skyline_depth', 1, 30).listen();
@@ -437,13 +437,14 @@ src:url("https://fast.fonts.…</style>
 					guiControls.P_skyline_Percentage_Depth = 100}
 					
 					guiControls.h_Hw_window_opening_dim_verticalHeight = 2.5-Number(guiControls.window_cill_Height_above_FFL)-Number(guiControls.h_head_Window_Height_above_FFL);
+					
+
 					if (Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)<2.5) {
-					guiControls.h_head_Window_Height_above_FFL = Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)} else { 
-					guiControls.h_head_Window_Height_above_FFL = 2.5
-					}
-					if (Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)<2.5) {
-					guiControls.h_head_Window_Height_above_FFL = Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)} else { 
-					guiControls.h_head_Window_Height_above_FFL = 2.5
+					guiControls.h_head_Window_Height_above_FFL = Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
+					wall_head.scale.set( 2.5, 2.5-guiControls.h_head_Window_Height_above_FFL, Number(guiControls.Tw_Wall_Thickness));} else { 
+					guiControls.h_head_Window_Height_above_FFL = 2.5;
+					wall_head.scale.x=0;
+					wall_head.scale.z=0;
 					}
 					guiControls.H_obstruction_Height_above_mid_Window = guiControls.y_obstruction_Height_above_head_Window-(guiControls.Hw_window_opening_dim_verticalHeight/2)
 					updateSplineOutline();
@@ -460,7 +461,7 @@ src:url("https://fast.fonts.…</style>
 					wall.rotation.z = Number(guiControls.rotationZ_deg)/180*Math.PI;
 					wall_cill.scale.set( 2.5, Number(guiControls.window_cill_Height_above_FFL), Number(guiControls.Tw_Wall_Thickness) );
 					wall_cill.position.set(-1.25,Number(guiControls.window_cill_Height_above_FFL)/2,0);
-					wall_head.scale.set( 2.5, 2.5-guiControls.h_head_Window_Height_above_FFL, Number(guiControls.Tw_Wall_Thickness));
+					
 					wall_head.position.set(-1.25,(Number(guiControls.window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight))+(2.5-Number(guiControls.window_cill_Height_above_FFL)-Number(guiControls.Hw_window_opening_dim_verticalHeight))/2,0);
 					wall.position.set(1.25,Number(guiControls.positionY) + 1.25,Number(guiControls.positionZ));
 					wall.scale.z = Number(guiControls.Tw_Wall_Thickness);
