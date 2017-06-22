@@ -186,7 +186,13 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright {yyyy} {name of copyright owner}
+   Copyright 2017 Julian Buhagiar.
+   
+   The extent of the copyright is the original work written 
+   within the html files such as the Javascript and CSS definitions and
+   does not include any trademarks or material that the visualisation is 
+   based on which is owned by BREEAM which has been included in image format 
+   for context only. 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
