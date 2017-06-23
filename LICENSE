@@ -2,16 +2,6 @@ MIT License
 
 Copyright (c) 2017 Julian Buhagiar
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
 The extent of the copyright is the original work written within the: 
 index.html files,
 indexLight.html files,
@@ -24,6 +14,17 @@ Libraries and fonts that are referenced within this work have their own licenses
 This work is based on Home Qualiy Mark which is owned by
 BREGlobal Ltd. Limited etracts from the HQM Manual has been included within 
 this work for context only. 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
 To remove any risk of copyright infringement on deviant works you must delete the 
 <img> tags from the html files and delete the img folder.
 
