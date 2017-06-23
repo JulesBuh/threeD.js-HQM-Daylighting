@@ -272,9 +272,9 @@ src:url("https://fast.fonts.…</style>
 				obstructionPlane = new THREE.Mesh(planeGeometry, planeMaterial);
 			// working Plane
 				workplaneGeometry = new THREE.PlaneGeometry(5, 1, 1);
-				workplaneMaterial = new THREE.MeshLambertMaterial({color: 0x0033aa});
+				workplaneMaterial = new THREE.MeshLambertMaterial({color: 0xFFEB00});
 				workplaneMaterial.side = THREE.DoubleSide
-				workplaneMaterial.opacity = 0.5;
+				workplaneMaterial.opacity = 0.8;
 				workplaneMaterial.transparent  = true;
 				workPlane = new THREE.Mesh(workplaneGeometry, workplaneMaterial);
 			// window Plane
@@ -288,8 +288,8 @@ src:url("https://fast.fonts.…</style>
 				var annotationMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
 				var annotationLineGeometry = new THREE.Geometry();
 				annotationLineGeometry.vertices.push(
-					new THREE.Vector3( 0, 0.85, -3.8 ),
-					new THREE.Vector3( 0, 4.35, 7.7 )
+					new THREE.Vector3( -2.5, 0.85, -3.8 ),
+					new THREE.Vector3( -2.5, 4.35, 7.7 )
 				);
 				var annotationLine2Geometry = new THREE.Geometry();
 				annotationLine2Geometry.vertices.push(
@@ -305,7 +305,7 @@ src:url("https://fast.fonts.…</style>
 				var annotationLine2 = new THREE.Line( annotationLine2Geometry, annotationMaterial );
 				var annotationLine3 = new THREE.Line( annotationLine3Geometry, annotationMaterial );
 			// wall
-				wallGeometry = new THREE.BoxGeometry(1, 2.5, 1);
+				wallGeometry = new THREE.BoxGeometry(1, 1, 1);
 				wall_principal_Geometry = new THREE.BoxGeometry(1, 1, 1);
 				wallMaterial = new THREE.MeshLambertMaterial({color: 0x3663FF});
 				wall = new THREE.Mesh(wall_principal_Geometry, wallMaterial);
@@ -416,6 +416,7 @@ src:url("https://fast.fonts.…</style>
 					this.positionY = 0;
 					this.positionZ = 0;
 					this.room_Depth = 5;
+					this.room_Height_floor_to_ceiling = 2.5;
 					this.D_obstruction_Position = 7.7;
 					this.y_obstruction_Height_above_head_Window = 2.3;
 					this.H_obstruction_Height_above_mid_Window = 0.5;
@@ -424,7 +425,15 @@ src:url("https://fast.fonts.…</style>
 					this.c_window_cill_Height_above_FFL = 1.05;
 					this.Tw_Wall_Thickness = 0.3;
 					this.d_skyline_workplane_depth = (5*(2.5-0.85))/2.9;
+					this.d_skyline_workplane_depth_full = (5*(2.5-0.85))/2.9;
 					this.P_skyline_Percentage_Depth = ((5*(2.5-0.85))/2.9)*100/5;
+					this.window_Material = 'double glazing';
+					this.wall_Material = 'magnolia paint';
+					this.floor_Material = 'light carpet';
+					this.ceiling_Material = 'white paint';
+					this.space_Classification = 'Living Room';
+					this.workPlane = 0.85;
+					this.Daylight_Factor = 0;
 				}
 				var datGUI = new dat.GUI({width: 700});
 				//datGUI.add(guiControls, 'rotationX_deg', -45, 45);
@@ -433,57 +442,104 @@ src:url("https://fast.fonts.…</style>
 				//datGUI.add(guiControls, 'positionX', -30.1, 30.1);
 				//datGUI.add(guiControls, 'positionY', -30.1, 30.1);
 				//datGUI.add(guiControls, 'positionZ', -30.1, 0);
-
-
-				var f1 = datGUI.addFolder('Design Geometry Inputs');
-				var f2 = datGUI.addFolder('Design Geometry  Outputs');
-				var f3 = datGUI.addFolder('Calculation Outputs');
-				f1.add(guiControls, 'room_Depth', 1, 30);
-				f1.add(guiControls, 'D_obstruction_Position', 0.5, 30);
-				f1.add(guiControls, 'y_obstruction_Height_above_head_Window', 0.01, 20);
+				datGUI.add(guiControls, 'room_Depth', 1, 30).listen();
+				datGUI.add(guiControls, 'D_obstruction_Position', 0.5, 30).listen();
+				datGUI.add(guiControls, 'y_obstruction_Height_above_head_Window', 0.01, 20).listen();
+				datGUI.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0.4, 2.4).listen();
+				datGUI.add(guiControls, 'c_window_cill_Height_above_FFL', 0.05, guiControls.room_Height_floor_to_ceiling).listen();
+				
+				var f1 = datGUI.addFolder('Design Geometry Inputs (En_45;FI_60_55)');
+				var f1r = f1.addFolder('Space Geometry Inputs (SL_45)');
+				var f1c = f1.addFolder('Construction Geometry Inputs (EF_25)');
+				var f1cw = f1c.addFolder('Wall Geometry Inputs (EF_25_10)');
+				var f1co = f1c.addFolder('Opening Geometry Inputs (EF_25_30)');
+				var f1o = f1.addFolder('Obstruction Geometry Inputs (En_##)');
+				var fM = datGUI.addFolder('Design Material Inputs (Pr_35;FI_40_80)');
+				var f2 = datGUI.addFolder('Design Geometry Outputs (Zz_20_20;FI_60_55)');
+				var f3 = datGUI.addFolder('Calculation Outputs (FI_40_10)');
+				f1r.add(guiControls, 'space_Classification', ['Kitchen','Living Room','Home Office','Dining Room','Open-plan Kitchen Living','Other Habitable']).listen();	
+				f1r.add(guiControls, 'workPlane', 0.05, 0.9).listen();
+				f1r.add(guiControls, 'room_Depth', 1, 30).listen();
+				f1r.add(guiControls, 'floor_Material', ['light carpet','dark carpet','light tiles','dark tiles','timber']).listen();
+				f1r.add(guiControls, 'ceiling_Material', ['white paint','magnolia paint','dark paint']).listen();
+				f1r.add(guiControls, 'room_Height_floor_to_ceiling', 2, 10);
+				f1o.add(guiControls, 'D_obstruction_Position', 0.5, 30).listen();
+				f1o.add(guiControls, 'y_obstruction_Height_above_head_Window', 0.01, 20).listen();
+				fM.add(guiControls, 'ceiling_Material', ['white paint','magnolia paint','dark paint']).listen();
+				fM.add(guiControls, 'floor_Material', ['light carpet','dark carpet','light tiles','dark tiles','timber']).listen();
+				fM.add(guiControls, 'wall_Material', ['magnolia paint','white paint','dark paint','tiles','timber','brick']).listen();
+				f1cw.add(guiControls, 'wall_Material', ['magnolia paint','white paint','dark paint','tiles','timber','brick']).listen();
+				fM.add(guiControls, 'window_Material', ['double glazing','triple glazing']).listen();
+				f1co.add(guiControls, 'window_Material', ['double glazing','triple glazing']).listen();
+				f1cw.add(guiControls, 'Tw_Wall_Thickness', 0.05, 1.0);
+				f1co.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0.4, 2.4).listen();
+				f1co.add(guiControls, 'c_window_cill_Height_above_FFL', 0.05, guiControls.room_Height_floor_to_ceiling).listen();
 				f2.add(guiControls, 'H_obstruction_Height_above_mid_Window', 0.005, 20).listen();
-				f1.add(guiControls, 'Tw_Wall_Thickness', 0.05, 1.0);
-				f1.add(guiControls, 'Hw_window_opening_dim_verticalHeight', 0.4, 2.4).listen();
-				f1.add(guiControls, 'c_window_cill_Height_above_FFL', 0.05, 2.5).listen();
-				f2.add(guiControls, 'h_head_Window_Height_above_FFL', 0, 2.5).listen();
-				f3.add(guiControls, 'd_skyline_workplane_depth', 1, 30).listen();
+				f2.add(guiControls, 'h_head_Window_Height_above_FFL', 0, guiControls.room_Height_floor_to_ceiling).listen();
+				f2.add(guiControls, 'd_skyline_workplane_depth_full', 1, 30).listen();
 				f3.add(guiControls, 'P_skyline_Percentage_Depth', 0, 100).listen();
-				//datGUI.add(guiControls, 'object', ['wall','ceiling','floor','obstruction','window']);
+				f3.add(guiControls, 'Daylight_Factor', 0, 25).listen();
 				
-				
-				
-				function head_Window(){
-					this.height = Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
-					this.wall_height = 2.5-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.Hw_window_opening_dim_verticalHeight);
-				}
-				
-				function render(){
-					guiControls.d_skyline_workplane_depth=(guiControls.D_obstruction_Position*(guiControls.h_head_Window_Height_above_FFL-0.85))/guiControls.y_obstruction_Height_above_head_Window;
+				function updateSplineOutline() { 
+								annotationLine.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
+								annotationLine.geometry.vertices[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
+								annotationLine.geometry.vertices[ 0 ].y = guiControls.workPlane;
+								annotationLine.geometry.vertices[ 0 ].z = guiControls.positionZ-guiControls.d_skyline_workplane_depth+(guiControls.Tw_Wall_Thickness/2);
+								annotationLine.geometry.verticesNeedUpdate = true;
+								
+								var dcillworkplane = guiControls.Tw_Wall_Thickness*((guiControls.c_window_cill_Height_above_FFL - guiControls.workPlane)/guiControls.Hw_window_opening_dim_verticalHeight);
+								var dheadworkplane = guiControls.Tw_Wall_Thickness*((guiControls.y_obstruction_Height_above_head_Window)/guiControls.Hw_window_opening_dim_verticalHeight);
+								annotationLine2.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
+								annotationLine2.geometry.vertices[ 1 ].z = guiControls.positionZ+dheadworkplane+guiControls.Tw_Wall_Thickness/2;
+								annotationLine2.geometry.vertices[ 0 ].y = guiControls.workPlane;
+								annotationLine2.geometry.vertices[ 0 ].z = guiControls.positionZ-dcillworkplane-guiControls.Tw_Wall_Thickness/2;
+								annotationLine2.geometry.verticesNeedUpdate = true;
+								
+								annotationLine3.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
+								annotationLine3.geometry.vertices[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
+								annotationLine3.geometry.vertices[ 0 ].y = guiControls.c_window_cill_Height_above_FFL + guiControls.Hw_window_opening_dim_verticalHeight/2;
+								annotationLine3.geometry.vertices[ 0 ].z = guiControls.positionZ;
+								annotationLine3.geometry.verticesNeedUpdate = true;
+					} 
+				function updateGeometry() {
+				if(guiControls.space_Classification == 'Kitchen'){
+				guiControls.workPlane=0.9;} else if (guiControls.space_Classification == 'Living Room'){
+				guiControls.workPlane=0.8;}else{
+				guiControls.workPlane=0.85;}
+					guiControls.d_skyline_workplane_depth=((guiControls.D_obstruction_Position-guiControls.positionZ)*(guiControls.h_head_Window_Height_above_FFL-guiControls.workPlane))/guiControls.y_obstruction_Height_above_head_Window;
+						var dcillworkplane = guiControls.Tw_Wall_Thickness*((guiControls.c_window_cill_Height_above_FFL - guiControls.workPlane)/guiControls.Hw_window_opening_dim_verticalHeight);
+					guiControls.d_skyline_workplane_depth_full= guiControls.d_skyline_workplane_depth - guiControls.positionZ - dcillworkplane - guiControls.Tw_Wall_Thickness;
 					if (guiControls.d_skyline_workplane_depth/guiControls.room_Depth<1){
-					guiControls.P_skyline_Percentage_Depth = guiControls.d_skyline_workplane_depth*100/guiControls.room_Depth;} else {
+					guiControls.P_skyline_Percentage_Depth = guiControls.d_skyline_workplane_depth_full*100/guiControls.room_Depth;} else {
 					guiControls.P_skyline_Percentage_Depth = 100}
-					
-					guiControls.h_Hw_window_opening_dim_verticalHeight = 2.5-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.h_head_Window_Height_above_FFL);
-					
-					if (Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)<2.5) {
+					guiControls.h_Hw_window_opening_dim_verticalHeight = guiControls.room_Height_floor_to_ceiling-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.h_head_Window_Height_above_FFL);
+					if (Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)<guiControls.room_Height_floor_to_ceiling) {
 					guiControls.h_head_Window_Height_above_FFL = Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
-					wall_head.scale.set( 2.5, 2.5-guiControls.h_head_Window_Height_above_FFL, Number(guiControls.Tw_Wall_Thickness));} else { 
-					guiControls.h_head_Window_Height_above_FFL = 2.5;
+					wall_head.scale.set( 2.5, guiControls.room_Height_floor_to_ceiling-guiControls.h_head_Window_Height_above_FFL, Number(guiControls.Tw_Wall_Thickness));} else { 
+					guiControls.h_head_Window_Height_above_FFL = guiControls.room_Height_floor_to_ceiling;
 					wall_head.scale.x=0;
 					wall_head.scale.z=0;
 					}
-					if (Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)>2.5) {
-					var window_height = 2.5-Number(guiControls.c_window_cill_Height_above_FFL);
+					//Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
+					if (Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight)>guiControls.room_Height_floor_to_ceiling) {
+					var window_height = guiControls.room_Height_floor_to_ceiling-Number(guiControls.c_window_cill_Height_above_FFL);
 					guiControls.Hw_window_opening_dim_verticalHeight = window_height;  }
-					
-					
 					guiControls.H_obstruction_Height_above_mid_Window = guiControls.y_obstruction_Height_above_head_Window-(guiControls.Hw_window_opening_dim_verticalHeight/2)
+				}
+				/*function head_Window(){
+					this.height = Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
+					this.wall_height = 2.5-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.Hw_window_opening_dim_verticalHeight);
+				}*/
+				
+				
+				function render(){
+					updateGeometry();
 					updateSplineOutline();
-					Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight);
-					
-					workPlane.scale.set(1,guiControls.d_skyline_workplane_depth ,1);
-					workPlane.position.set(0,0.85,-(guiControls.d_skyline_workplane_depth-(Number(guiControls.Tw_Wall_Thickness)))/2);
-					
+					workPlane.scale.set(1,guiControls.d_skyline_workplane_depth_full ,1);
+					var moveWP = guiControls.d_skyline_workplane_depth-guiControls.d_skyline_workplane_depth_full;
+					workPlane.position.set(0,guiControls.workPlane,guiControls.positionZ-(guiControls.d_skyline_workplane_depth-(Number(guiControls.Tw_Wall_Thickness)))/2 - moveWP/2);
+					window1.position.set(0,guiControls.room_Height_floor_to_ceiling/2,guiControls.positionZ);
+					window1.scale.set(1,guiControls.room_Height_floor_to_ceiling,1);
 					axis.rotation.x = Number(guiControls.rotationX_deg)/180*Math.PI;
 					axis.rotation.y = Number(guiControls.rotationY_deg)/180*Math.PI;
 					axis.rotation.z = Number(guiControls.rotationZ_deg)/180*Math.PI;
@@ -491,54 +547,31 @@ src:url("https://fast.fonts.…</style>
 					wall.rotation.y = Number(guiControls.rotationY_deg)/180*Math.PI;
 					wall.rotation.z = Number(guiControls.rotationZ_deg)/180*Math.PI;
 					wall_cill.scale.set( 2.5, Number(guiControls.c_window_cill_Height_above_FFL), Number(guiControls.Tw_Wall_Thickness) );
-					wall_cill.position.set(-1.25,Number(guiControls.c_window_cill_Height_above_FFL)/2,0);
-					
-					wall_head.position.set(-1.25,(Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight))+(2.5-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.Hw_window_opening_dim_verticalHeight))/2,0);
-					wall.position.set(1.25,Number(guiControls.positionY) + 1.25,Number(guiControls.positionZ));
+					wall_cill.position.set(-1.25,Number(guiControls.c_window_cill_Height_above_FFL)/2,guiControls.positionZ);
+					wall_head.position.set(-1.25,(Number(guiControls.c_window_cill_Height_above_FFL)+Number(guiControls.Hw_window_opening_dim_verticalHeight))+(guiControls.room_Height_floor_to_ceiling-Number(guiControls.c_window_cill_Height_above_FFL)-Number(guiControls.Hw_window_opening_dim_verticalHeight))/2,guiControls.positionZ);
+					wall.position.set(1.25,Number(guiControls.positionY) + guiControls.room_Height_floor_to_ceiling/2,Number(guiControls.positionZ));
+					wall.scale.y = guiControls.room_Height_floor_to_ceiling;
 					wall.scale.z = Number(guiControls.Tw_Wall_Thickness);
-					axis.position.set(-Number(guiControls.positionX)/2,Number(guiControls.positionY) + 1.25,Number(guiControls.positionZ));
 					wall2.rotation.y = 90/180*Math.PI;
-					wall2.position.set(Number(guiControls.positionX)+2.35,Number(guiControls.positionY) + 1.25,Number(guiControls.positionZ)-(Number(guiControls.room_Depth)/2));
+					wall2.position.set(Number(guiControls.positionX)+2.35,Number(guiControls.positionY) + (guiControls.room_Height_floor_to_ceiling/2),Number(guiControls.positionZ)-(Number(guiControls.room_Depth)/2));
 					wall2.scale.x = Number(guiControls.room_Depth);
+					wall2.scale.y = guiControls.room_Height_floor_to_ceiling;
 					wall2.scale.z = Number(guiControls.Tw_Wall_Thickness);
 					wall3.scale.x = 5;
+					wall3.scale.y = guiControls.room_Height_floor_to_ceiling;
 					wall3.scale.z = Number(guiControls.Tw_Wall_Thickness);
-					wall3.position.set(Number(guiControls.positionX),Number(guiControls.positionY) + 1.25,Number(guiControls.positionZ)-(Number(guiControls.room_Depth)));
+					wall3.position.set(Number(guiControls.positionX),Number(guiControls.positionY) + (guiControls.room_Height_floor_to_ceiling/2),Number(guiControls.positionZ)-(Number(guiControls.room_Depth)));
 					wall3.rotation.y = 180/180*Math.PI;
 					floor.position.set(Number(guiControls.positionX),-0.15,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
 					floor.scale.x=5;
 					floor.scale.z=Number(guiControls.room_Depth)+Number(guiControls.Tw_Wall_Thickness);
-					ceiling.position.set(Number(guiControls.positionX),2.5+0.15,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
+					ceiling.position.set(Number(guiControls.positionX),guiControls.room_Height_floor_to_ceiling+0.15,Number(guiControls.positionZ)-(Number(guiControls.room_Depth))/2);
 					ceiling.scale.x=5;
 					ceiling.scale.z=Number(guiControls.room_Depth)+Number(guiControls.Tw_Wall_Thickness);
-					obstructionPlane.scale.set( 1, Number(guiControls.y_obstruction_Height_above_head_Window)+guiControls.h_head_Window_Height_above_FFL, 1 );
+					obstructionPlane.scale.set( 1, Number(guiControls.y_obstruction_Height_above_head_Window)+guiControls.h_head_Window_Height_above_FFL+0.3, 1 );
 					obstructionPlane.position.y = ((guiControls.y_obstruction_Height_above_head_Window+ guiControls.h_head_Window_Height_above_FFL-0.3)/2);
 					obstructionPlane.position.z = Number(guiControls.D_obstruction_Position)+(guiControls.Tw_Wall_Thickness/2);
 				}
-				
-					function updateSplineOutline() { 
-
-								annotationLine.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL-0.15;
-								annotationLine.geometry.vertices[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
-								annotationLine.geometry.vertices[ 0 ].z = -guiControls.d_skyline_workplane_depth+(guiControls.Tw_Wall_Thickness/2);
-								annotationLine.geometry.verticesNeedUpdate = true;
-								
-								var dcillworkplane = guiControls.Tw_Wall_Thickness*((guiControls.c_window_cill_Height_above_FFL - 0.85)/guiControls.Hw_window_opening_dim_verticalHeight);
-								var dheadworkplane = guiControls.Tw_Wall_Thickness*((guiControls.y_obstruction_Height_above_head_Window-0.15)/guiControls.Hw_window_opening_dim_verticalHeight);
-								annotationLine2.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL-0.15;
-								annotationLine2.geometry.vertices[ 1 ].z = dheadworkplane+guiControls.Tw_Wall_Thickness/2;
-								annotationLine2.geometry.vertices[ 0 ].y = 0.85;
-								annotationLine2.geometry.vertices[ 0 ].z = -dcillworkplane-guiControls.Tw_Wall_Thickness/2;
-								annotationLine2.geometry.verticesNeedUpdate = true;
-								
-								annotationLine3.geometry.vertices[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL-0.15;
-								annotationLine3.geometry.vertices[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
-								annotationLine3.geometry.vertices[ 0 ].y = guiControls.c_window_cill_Height_above_FFL + guiControls.Hw_window_opening_dim_verticalHeight/2;
-								annotationLine3.geometry.vertices[ 0 ].z = 0;
-								annotationLine3.geometry.verticesNeedUpdate = true;
-					} 
-
-
 				
 				function animate(){
 					requestAnimationFrame(animate);
