@@ -1,23 +1,23 @@
-			body {
-			margin: 0;
-			overflow:hidden;
-			color:#ffffff;
-			}
-			h1{font-family: 'Calvert MT W01 Light';}
-			canvas {
-			width: 100%;
-			height: 100% }
-			img.criteria{
-				position: absolute;
-				left: 0px;
-				bottom: 0px;
-				z-index: 3;
-				width:30%;
-			}
-			img.logo{
-				position: absolute;
-				right: 0px;
-				bottom: 0px;
-				width:100px;
-				z-index: 3;
-			}
+body {
+margin: 0;
+overflow:hidden;
+color:#ffffff;
+}
+h1{font-family: 'Calvert MT W01 Light';}
+canvas {
+width: 100%;
+height: 100% }
+img.criteria{
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	z-index: 3;
+	width:30%;
+}
+img.logo{
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width:100px;
+	z-index: 3;
+}
