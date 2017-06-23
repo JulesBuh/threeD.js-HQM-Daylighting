@@ -2,6 +2,20 @@ MIT License
 
 Copyright (c) 2017 Julian Buhagiar
 
+The extent of the copyright is the original work written within the: 
+index.html files,
+indexLight.html files,
+js/scene.js 
+and css definitions 
+
+The copyright does not include any fonts, js/lib libraries, trademarks or 
+material on which the visualisation is based.
+Libraries and fonts that are referenced within this work have their own licenses.
+This work is based on Home Qualiy Mark which is owned by
+BREGlobal Ltd. Limited extracts from the HQM Manual have been included within 
+this work for context only and comes with its own conditions set out by BREGlobal Ltd
+found at http://www.homequalitymark.com/filelibrary/HQM-Beta--England--2015_SD232_r1.0.pdf
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -11,13 +25,7 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-The extent of the copyright is the original work writtenwithin the html files,
-js/scene.js and css definitions and does not include any fonts, libraries, 
-trademarks or material on which the visualisation is based on which is owned by 
-BREEAM and has been included within the work for context only. 
-Libraries and fonts that are referenced within this work have their own licenses.
-To remove any copyright infringement delete the <img> tags from the html and delete the img folder.
+You must delete the <img> tags from the html files and delete the img folder.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
