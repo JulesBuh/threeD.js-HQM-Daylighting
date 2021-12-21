@@ -485,25 +485,26 @@ src:url("https://fast.fonts.…</style>
 				f3.add(guiControls, 'Daylight_Factor', 0, 25).listen();
 				
 				function updateSplineOutline() { 
-								annotationLine.geometry[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
-								annotationLine.geometry[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
-								annotationLine.geometry[ 0 ].y = guiControls.workPlane;
-								annotationLine.geometry[ 0 ].z = guiControls.positionZ-guiControls.d_skyline_workplane_depth+(guiControls.Tw_Wall_Thickness/2);
+					console.log =  annotationLine.geometry[1];
+								/*annotationLine.geometry[ 1 ][1] = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
+								annotationLine.geometry[ 1 ][2] = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
+								annotationLine.geometry[ 0 ][1] = guiControls.workPlane;
+								annotationLine.geometry[ 0 ][2] = guiControls.positionZ-guiControls.d_skyline_workplane_depth+(guiControls.Tw_Wall_Thickness/2);
 								annotationLine.geometry.verticesNeedUpdate = true;
 								
 								var dcillworkplane = guiControls.Tw_Wall_Thickness*((guiControls.c_window_cill_Height_above_FFL - guiControls.workPlane)/guiControls.Hw_window_opening_dim_verticalHeight);
 								var dheadworkplane = guiControls.Tw_Wall_Thickness*((guiControls.y_obstruction_Height_above_head_Window)/guiControls.Hw_window_opening_dim_verticalHeight);
-								annotationLine2.geometry[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
-								annotationLine2.geometry[ 1 ].z = guiControls.positionZ+dheadworkplane+guiControls.Tw_Wall_Thickness/2;
-								annotationLine2.geometry[ 0 ].y = guiControls.workPlane;
-								annotationLine2.geometry[ 0 ].z = guiControls.positionZ-dcillworkplane-guiControls.Tw_Wall_Thickness/2;
+								annotationLine2.geometry[ 1 ][1] = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
+								annotationLine2.geometry[ 1 ][2] = guiControls.positionZ+dheadworkplane+guiControls.Tw_Wall_Thickness/2;
+								annotationLine2.geometry[ 0 ][1] = guiControls.workPlane;
+								annotationLine2.geometry[ 0 ][2] = guiControls.positionZ-dcillworkplane-guiControls.Tw_Wall_Thickness/2;
 								annotationLine2.geometry.verticesNeedUpdate = true;
 								
 								annotationLine3.geometry[ 1 ].y = guiControls.y_obstruction_Height_above_head_Window + guiControls.h_head_Window_Height_above_FFL;
 								annotationLine3.geometry[ 1 ].z = guiControls.D_obstruction_Position+(guiControls.Tw_Wall_Thickness/2);
 								annotationLine3.geometry[ 0 ].y = guiControls.c_window_cill_Height_above_FFL + guiControls.Hw_window_opening_dim_verticalHeight/2;
 								annotationLine3.geometry[ 0 ].z = guiControls.positionZ;
-								annotationLine3.geometry.verticesNeedUpdate = true;
+								annotationLine3.geometry.verticesNeedUpdate = true;*/
 					} 
 				function updateGeometry() {
 				if(guiControls.space_Classification == 'Kitchen'){
