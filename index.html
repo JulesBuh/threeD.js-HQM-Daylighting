@@ -286,24 +286,28 @@ src:url("https://fast.fonts.…</style>
 				window1 = new THREE.Mesh(windowGeometry, windowMaterial);
 			//
 				var annotationMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
-				var annotationLineGeometry = new THREE.Geometry();
-				annotationLineGeometry.vertices.push(
-					new THREE.Vector3( -2.5, 0.85, -3.8 ),
-					new THREE.Vector3( -2.5, 4.35, 7.7 )
-				);
-				var annotationLine2Geometry = new THREE.Geometry();
-				annotationLine2Geometry.vertices.push(
-					new THREE.Vector3( -2.5, 2.1, 0.15 ),
-					new THREE.Vector3( -2.5, 1.1, -0.15 )
-				);
-				var annotationLine3Geometry = new THREE.Geometry();
-				annotationLine3Geometry.vertices.push(
-					new THREE.Vector3( -2.5, 2.1, 0 ),
-					new THREE.Vector3( -2.5, 4.35, 7.7 )
-				);
-				var annotationLine = new THREE.Line( annotationLineGeometry, annotationMaterial );
-				var annotationLine2 = new THREE.Line( annotationLine2Geometry, annotationMaterial );
-				var annotationLine3 = new THREE.Line( annotationLine3Geometry, annotationMaterial ); 
+				const annotationLinePoints = [];
+					annotationLinePoints.push( new THREE.Vector3( -2.5, 0.85, -3.8 ) );
+					annotationLinePoints.push( new THREE.Vector3(-2.5, 4.35, 7.7 ) );
+
+				const geometry1 = new THREE.BufferGeometry().setFromPoints( annotationLinePoints );
+				
+				const annotationLine2Points = [];
+					annotationLine2Points.push( new THREE.Vector3( -2.5, 0.85, -3.8 ) );
+					annotationLine2Points.push( new THREE.Vector3(-2.5, 4.35, 7.7 ) );
+
+				const geometry2 = new THREE.BufferGeometry().setFromPoints( annotationLine2Points );	
+				
+				const annotationLine3Points = [];
+					annotationLine3Points.push( new THREE.Vector3(  -2.5, 2.1, 0  ) );
+					annotationLine3Points.push( new THREE.Vector3(-2.5, 4.35, 7.7 ) );
+
+				const geometry3 = new THREE.BufferGeometry().setFromPoints( annotationLine3Points );	
+				
+
+				var annotationLine = new THREE.Line( geometry1, annotationMaterial );
+				var annotationLine2 = new THREE.Line( geometry2, annotationMaterial );
+				var annotationLine3 = new THREE.Line( geometry3, annotationMaterial ); 
 			// wall
 				wallGeometry = new THREE.BoxGeometry(1, 1, 1);
 				wall_principal_Geometry = new THREE.BoxGeometry(1, 1, 1);
