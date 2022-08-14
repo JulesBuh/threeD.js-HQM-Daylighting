@@ -33736,7 +33736,7 @@ class ImageBitmapLoader extends Loader {
 		fetchOptions.credentials = ( this.crossOrigin === 'anonymous' ) ? 'same-origin' : 'include';
 		fetchOptions.headers = this.requestHeader;
 
-	fetch( url, {mode: "cors"}/*fetchOptions* ).then( function ( res ) {
+	fetch( url, {mode: "cors"}/*fetchOptions*/ ).then( function ( res ) {
 
 			return res.blob();
 
