@@ -33736,7 +33736,7 @@ class ImageBitmapLoader extends Loader {
 		fetchOptions.credentials = ( this.crossOrigin === 'anonymous' ) ? 'same-origin' : 'include';
 		fetchOptions.headers = this.requestHeader;
 
-	fetch( url, {mode: "cors"}/*fetchOptions*/ ).then( function ( res ) {
+	fetch( url, { mode: "cors" }).then( function ( res ) {
 
 			return res.blob();
 
@@ -39925,7 +39925,7 @@ var require_web_ifc_mt = __commonJS({
         function getBinaryPromise() {
           if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
             if (typeof fetch === "function" && !isFileURI(wasmBinaryFile)) {
-              return fetch(wasmBinaryFile, { /*credentials: "same-origin"*/ mode: 'cors' }).then(function(response) {
+              return fetch(wasmBinaryFile, { mode: "cors" }).then(function(response) {
                 if (!response["ok"]) {
                   throw "failed to load wasm binary file at '" + wasmBinaryFile + "'";
                 }
@@ -39983,7 +39983,7 @@ var require_web_ifc_mt = __commonJS({
           }
           function instantiateAsync() {
             if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && !isFileURI(wasmBinaryFile) && typeof fetch === "function") {
-              return fetch(wasmBinaryFile, { /*credentials: "same-origin"*/ mode: 'cors'}).then(function(response) {
+              return fetch(wasmBinaryFile, { mode: "cors" }).then(function(response) {
                 var result = WebAssembly.instantiateStreaming(response, info);
                 return result.then(receiveInstantiationResult, function(reason) {
                   err("wasm streaming compile failed: " + reason);
@@ -45774,7 +45774,7 @@ var require_web_ifc = __commonJS({
         function getBinaryPromise() {
           if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
             if (typeof fetch === "function" && !isFileURI(wasmBinaryFile)) {
-              return fetch(wasmBinaryFile, { /*credentials: "same-origin"*/ mode:'cors' }).then(function(response) {
+              return fetch(wasmBinaryFile, { mode: "cors" }).then(function(response) {
                 if (!response["ok"]) {
                   throw "failed to load wasm binary file at '" + wasmBinaryFile + "'";
                 }
@@ -45822,7 +45822,7 @@ var require_web_ifc = __commonJS({
           }
           function instantiateAsync() {
             if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && !isFileURI(wasmBinaryFile) && typeof fetch === "function") {
-              return fetch(wasmBinaryFile, { /*credentials: "same-origin"*/mode:'cors' }).then(function(response) {
+              return fetch(wasmBinaryFile, { mode: "cors" }).then(function(response) {
                 var result = WebAssembly.instantiateStreaming(response, info);
                 return result.then(receiveInstantiationResult, function(reason) {
                   err("wasm streaming compile failed: " + reason);
